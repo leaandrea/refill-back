@@ -26,8 +26,21 @@ function filterData() {
 
 filterData();
 
+const initialPoints = require("./initialPoints.json");
+const InitialPoint = require("../models/InitialPoint");
 const fontaineModel = require("../models/Fontaine");
 const mongoose = require("mongoose");
+
+// mongoose
+//   .connect("mongodb://localhost/refill", { useNewUrlParser: true })
+//   .then(() => {
+//     InitialPoint.insertMany(initialPoints)
+//       .then(res => {
+//         console.log(res);
+//         console.log("initial points added");
+//       })
+//       .catch(err => console.log(err));
+//   });
 
 // mongoose
 //   .connect("mongodb://localhost/refill", { useNewUrlParser: true })
@@ -42,4 +55,4 @@ const mongoose = require("mongoose");
 //     // fontaineModel.find({ en_service: "Non" }).then(res => console.log(res));
 //   });
 
-module.exports = filterData;
+// module.exports = filterData
