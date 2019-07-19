@@ -24,4 +24,14 @@ router.post("/", (req, res, next) => {
     .catch(err => next(err));
 });
 
+router.delete("/:id", (req, res) => {
+  console.log(req.params.id);
+  Fontaine.findByIdAndDelete(req.params.id)
+    .then(dbRes => {
+      console.log(dbRes);
+      res.status(200).json(dbRes);
+    })
+    .catch(dbErr => res.send(dbErr));
+});
+
 module.exports = router;
