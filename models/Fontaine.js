@@ -9,7 +9,8 @@ const Fontaine = new Schema({
   en_service: Boolean,
   gazeuse: Boolean,
   verified: Boolean,
-  type: { type: String, enum: ["fontaine", "commerce"] }
+  type: { type: String, enum: ["fontaine", "commerce"] },
+  name: String
 });
 
 module.exports = mongoose.model("fontaine", Fontaine);

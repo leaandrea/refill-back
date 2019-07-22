@@ -13,8 +13,28 @@ router.get("/", (req, res, next) => {
 });
 
 router.post("/", (req, res, next) => {
-  let { address } = req.body;
-  Fontaine.create({ address })
+  let {
+    gazeuse,
+    address,
+    verified,
+    potable,
+    lat,
+    lng,
+    en_service,
+    type,
+    name
+  } = req.body;
+  Fontaine.create({
+    gazeuse,
+    address,
+    verified,
+    potable,
+    lat,
+    lng,
+    en_service,
+    type,
+    name
+  })
     .then(fontaine => {
       res.json({
         success: true,
