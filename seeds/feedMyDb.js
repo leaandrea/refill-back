@@ -10,7 +10,7 @@ function filterData() {
     newObject.potable = element.fields.a_boire;
     newObject.address = element.fields.adr_s;
     newObject.gazeuse =
-      element.fields.modele === "Fontaine pétillante" ? true : false;
+      element.fields.modele === "Fontaine petillante" ? true : false;
     newObject.verified = true;
     newObject.type = "fontaine";
     if (element.fields.en_service) {
