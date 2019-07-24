@@ -81,14 +81,14 @@ app.use((err, req, res, next) => {
   }
 });
 
-fontainModel
-  .insertMany(filterData())
-  .then(res => {
-    console.log(res);
-    console.log("youuupi feed");
-  })
-  .catch(err => console.log(err));
-feedingInitialPoints();
+// fontainModel
+//   .insertMany(filterData())
+//   .then(res => {
+//     console.log(res);
+//     console.log("youuupi feed");
+//   })
+//   .catch(err => console.log(err));
+// feedingInitialPoints();
 app.listen(process.env.PORT, () => {
   console.log("App hosted on: ", process.env.SITE_URL);
 });
