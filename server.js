@@ -17,7 +17,7 @@ const app = express();
 app.use(
   cors({
     origin: (origin, cb) => {
-      cb(null, origin && origin.startsWith("http://refill-project"));
+      cb(null, origin && origin.startsWith("http://refill"));
     },
     optionsSuccessStatus: 200,
     credentials: true
