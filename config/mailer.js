@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 
 router.post("/contact", (req, res, next) => {
   // console.log(req);
+  console.log("ici");
   console.log(req.body);
   const { firstname, lastname, email, subject, message } = req.body;
 

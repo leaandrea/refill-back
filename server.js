@@ -1,7 +1,5 @@
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
-
-const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const express = require("express");
@@ -9,11 +7,6 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 
 require("./config/database");
-
-const app_name = require("./package.json").name;
-const debug = require("debug")(
-  `${app_name}:${path.basename(__filename).split(".")[0]}`
-);
 
 const app = express();
 
@@ -27,9 +20,11 @@ app.use(
     credentials: true
   })
 );
+
 // app.use(logger("dev"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Set the public folder to "~/client/build/"
@@ -51,7 +46,8 @@ app.use("/api", require("./routes/index"));
 app.use("/api", require("./routes/auth"));
 app.use("/api/fontaines", require("./routes/fontaines"));
 app.use("/api/initialPoints", require("./routes/initialPoints"));
-
+const mailerRouter = require("./config/mailer");
+app.use(mailerRouter);
 // For any routes that starts with "/api", catch 404 and forward to error handler
 app.use("/api/*", (req, res, next) => {
   let err = new Error("Not Found");
@@ -60,9 +56,6 @@ app.use("/api/*", (req, res, next) => {
 });
 
 // For any other routes, redirect to the index.html file of React
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build/index.html"));
-});
 
 // Error handler
 app.use((err, req, res, next) => {
