@@ -45,14 +45,16 @@ const mongoose = require("mongoose");
 // mongoose
 //   .connect("mongodb://localhost/refill", { useNewUrlParser: true })
 //   .then(() => {
-//     fontaineModel
-//       .insertMany(fontaines)
-//       .then(res => {
-//         console.log(res);
-//         console.log("youuupi feed");
-//       })
-//       .catch(err => console.log(err));
+
 //     // fontaineModel.find({ en_service: "Non" }).then(res => console.log(res));
 //   });
+function feedingInitialPoints() {
+  InitialPoint.insertMany(initialPoints)
+    .then(res => {
+      console.log(res);
+      console.log("initial points added");
+    })
+    .catch(err => console.log(err));
+}
 
-// module.exports = filterData
+module.exports = { filterData, feedingInitialPoints };

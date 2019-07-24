@@ -9,7 +9,8 @@ const passport = require("passport");
 
 require("./config/passport");
 require("./config/database");
-
+const { filterData, feedingInitialPoints } = require("./seeds/feedMyDb");
+const fontainModel = require("./models/Fontaine");
 const app = express();
 
 // Set "Access-Control-Allow-Origin" header
@@ -80,6 +81,14 @@ app.use((err, req, res, next) => {
   }
 });
 
+fontainModel
+  .insertMany(filterData())
+  .then(res => {
+    console.log(res);
+    console.log("youuupi feed");
+  })
+  .catch(err => console.log(err));
+feedingInitialPoints();
 app.listen(process.env.PORT, () => {
   console.log("App hosted on: ", process.env.SITE_URL);
 });
