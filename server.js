@@ -15,16 +15,16 @@ const app = express();
 
 // Set "Access-Control-Allow-Origin" header
 app.use(
-  cors({
-    origin: (origin, cb) => {
-      cb(
-        null,
-        origin && origin.startsWith("http://refill-project.herokuapp.com")
-      );
-    },
-    optionsSuccessStatus: 200,
-    credentials: true
-  })
+  cors()
+  // origin: (origin, cb) => {
+  //   cb(
+  //     null,
+  //     origin && origin.startsWith("http://refill-project.herokuapp.com")
+  //   );
+  // },
+  // optionsSuccessStatus: 200,
+  // credentials: true
+  // }
 );
 
 // app.use(logger("dev"));
