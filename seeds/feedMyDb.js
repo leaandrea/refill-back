@@ -24,12 +24,12 @@ function filterData() {
   return fontaines;
 }
 
-filterData();
+// filterData();
 
-const initialPoints = require("./initialPoints.json");
-const InitialPoint = require("../models/InitialPoint");
-const fontaineModel = require("../models/Fontaine");
-const mongoose = require("mongoose");
+// const initialPoints = require("./initialPoints.json");
+// const InitialPoint = require("../models/InitialPoint");
+// const fontaineModel = require("../models/Fontaine");
+// const mongoose = require("mongoose");
 
 // mongoose
 //   .connect("mongodb://localhost/refill", { useNewUrlParser: true })
@@ -48,13 +48,13 @@ const mongoose = require("mongoose");
 
 //     // fontaineModel.find({ en_service: "Non" }).then(res => console.log(res));
 //   });
-function feedingInitialPoints() {
-  InitialPoint.insertMany(initialPoints)
-    .then(res => {
-      console.log(res);
-      console.log("initial points added");
-    })
-    .catch(err => console.log(err));
-}
+// function feedingInitialPoints() {
+//   InitialPoint.insertMany(initialPoints)
+//     .then(res => {
+//       console.log(res);
+//       console.log("initial points added");
+//     })
+//     .catch(err => console.log(err));
+// }
 
-module.exports = { filterData, feedingInitialPoints };
+module.exports = { filterData };
