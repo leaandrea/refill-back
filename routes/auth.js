@@ -1,73 +1,146 @@
 const express = require("express");
-// const passport = require('passport')
-const router = express.Router();
-const User = require("../models/User");
-
-// Bcrypt to encrypt passwords
+const router = new express.Router();
+const passport = require("passport");
 const bcrypt = require("bcrypt");
-const bcryptSalt = 10;
+const minPasswordLength = 4;
+const UserModel = require("../models/User");
 
 router.post("/signup", (req, res, next) => {
+  // console.log("file ?", req.file);
+  console.log("req body", req.body);
   const { username, password } = req.body;
-  if (!username || !password) {
-    res.status(400).json({ message: "Indicate username and password" });
-    return;
-  }
-  User.findOne({ username })
-    .then(userDoc => {
-      if (userDoc !== null) {
-        res.status(409).json({ message: "The username already exists" });
-        return;
-      }
-      const salt = bcrypt.genSaltSync(bcryptSalt);
-      const hashPass = bcrypt.hashSync(password, salt);
-      const newUser = new User({ username, password: hashPass, name });
-      return newUser.save();
-    })
-    .then(userSaved => {
-      // LOG IN THIS USER
-      // "req.logIn()" is a Passport method that calls "serializeUser()"
-      // (that saves the USER ID in the session)
-      req.logIn(userSaved, () => {
-        // hide "encryptedPassword" before sending the JSON (it's a security risk)
-        userSaved.password = undefined;
-        res.json(userSaved);
+
+  var errorMsg = null;
+
+  // more on http status
+  // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+
+  if (!username || !password)
+    errorMsg = {
+      message: "Provide username and password",
+      status: "warning",
+      httpStatus: 403 // 403	Forbidden
+    };
+
+  if (password.length < minPasswordLength)
+    errorMsg = {
+      message: `Please make your password at least ${minPasswordLength} characters`,
+      status: "warning",
+      httpStatus: 403 // 403	Forbidden
+    };
+
+  if (errorMsg) return res.status(errorMsg.httpStatus).json(errorMsg);
+
+  const salt = bcrypt.genSaltSync(10);
+  const hashPass = bcrypt.hashSync(password, salt);
+  // more info : https://en.wikipedia.org/wiki/Salt_(cryptography)
+
+  const newUser = {
+    username,
+    password: hashPass
+  };
+
+  UserModel.create(newUser)
+    .then(newUserFromDB => {
+      // passport in action below
+      req.login(newUserFromDB, err => {
+        console.log(newUserFromDB);
+        console.log("passport login error", err);
+        if (err) {
+          console.log("lol");
+          return res.status(500).json({
+            message: "Something went wrong with automatic login after signup"
+          });
+        }
+        console.log("OKKKKKKKKK");
+        res.status(200).json(req.user);
       });
     })
-    .catch(err => next(err));
+    .catch(apiErr => {
+      const error = {
+        11000: "The email already exists in database"
+      };
+      // you may want to use more error code(s) for precise error handling ...
+
+      const message = {
+        text: `Something went wrong saving user to Database : ${
+          error[apiErr.code]
+        }`,
+        status: "warning"
+      };
+
+      res.status(409).json({ message }); // 409	Conflict
+      return;
+    });
 });
 
 router.post("/login", (req, res, next) => {
-  const { username, password } = req.body;
+  passport.authenticate("local", (err, user, failureDetails) => {
+    var errorMsg = null;
 
-  // first check to see if there's a document with that username
-  User.findOne({ username })
-    .then(userDoc => {
-      // "userDoc" will be empty if the username is wrong (no document in database)
-      if (!userDoc) {
-        // create an error object to send to our error handler with "next()"
-        next(new Error("Incorrect username "));
-        return;
+    if (err) {
+      console.log("login error details", failureDetails);
+
+      errorMsg = {
+        message: "Something went wrong authenticating user",
+        status: "error",
+        httpStatus: 520
+      };
+    }
+
+    if (!user)
+      errorMsg = {
+        message: "sorry, we couldn't find that account",
+        status: "warning",
+        httpStatus: 408
+      };
+
+    if (errorMsg) return res.status(errorMsg.httpStatus).json(errorMsg);
+
+    req.logIn(user, function(err) {
+      if (err) {
+        console.log("passport login error", err);
+        return res.json({ message: "Something went wrong logging in" });
       }
+      // We are now logged in (notice here, only req._id is sent back to client)
+      // You may find usefull to send some other infos
+      // dont send sensitive informations back to the client
+      // let's choose the exposed user below
+      const { _id: id, username } = req.user;
+      next(
+        res.status(200).json({
+          loginStatus: true,
+          user: {
+            id,
+            username
+          }
+        })
+      );
+    });
+  })(req, res, next);
+});
 
-      // second check the password
-      // "compareSync()" will return false if the "password" is wrong
-      if (!bcrypt.compareSync(password, userDoc.password)) {
-        // create an error object to send to our error handler with "next()"
-        next(new Error("Password is wrong"));
-        return;
+router.post("/logout", (req, res, next) => {
+  console.log("coucou logout");
+  req.logout(); // utils function provided by passport
+  res.json({ message: "Success" });
+});
+
+router.get("/loggedin", (req, res, next) => {
+  console.log("ask is loggedin ???", req.isAuthenticated());
+  if (req.isAuthenticated()) {
+    // method provided by passport
+    const { _id: id, username } = req.user;
+    return res.status(200).json({
+      loginStatus: true,
+      message: "authorized",
+      user: {
+        id,
+        username
       }
-
-      // LOG IN THIS USER
-      // "req.logIn()" is a Passport method that calls "serializeUser()"
-      // (that saves the USER ID in the session)
-      req.logIn(userDoc, () => {
-        // hide "encryptedPassword" before sending the JSON (it's a security risk)
-        userDoc.password = undefined;
-        res.json(userDoc);
-      });
-    })
-    .catch(err => next(err));
+    });
+  }
+  res.status(403).json({ loginStatus: false, message: "Unauthorized" });
 });
 
 module.exports = router;

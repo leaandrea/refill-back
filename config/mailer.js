@@ -5,9 +5,6 @@ const nodemailer = require("nodemailer");
 /* GET home page */
 
 router.post("/contact", (req, res, next) => {
-  // console.log(req);
-  console.log("ici");
-  console.log(req.body);
   const { firstname, lastname, email, subject, message } = req.body;
 
   const transporter = nodemailer.createTransport({
@@ -18,7 +15,6 @@ router.post("/contact", (req, res, next) => {
     }
   });
 
-  // return console.log(transporter.options.auth.user);
   transporter
     .sendMail({
       from: email,

@@ -5,7 +5,9 @@ const cookieParser = require("cookie-parser");
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const passport = require("passport");
 
+require("./config/passport");
 require("./config/database");
 
 const app = express();
@@ -40,10 +42,13 @@ app.use(
     // store: new MongoStore({ mongooseConnection: mongoose.connection })
   })
 );
-// require("./passport")(app);
+
+// passport init
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api", require("./routes/index"));
-app.use("/api", require("./routes/auth"));
+app.use(require("./routes/auth"));
 app.use("/api/fontaines", require("./routes/fontaines"));
 app.use("/api/initialPoints", require("./routes/initialPoints"));
 const mailerRouter = require("./config/mailer");
