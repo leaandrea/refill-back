@@ -60,7 +60,6 @@ router.delete("/:id", (req, res) => {
 });
 
 router.patch("/:id", (req, res) => {
-  console.log("YOYOYO", req.body);
   Fontaine.findByIdAndUpdate(req.params.id, req.body, { new: true })
     .then(dbRes => {
       console.log(dbRes);
