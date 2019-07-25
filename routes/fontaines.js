@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/", (req, res, next) => {
   console.log(req.query.offset);
   const offset = req.query.offset ? Number(req.query.offset) : 0;
-  const limit = offset ? 40 : 0;
+  const limit = offset ? 40 : req.query.offset ? 40 : 0;
   Fontaine.find()
     .skip(offset)
     .limit(limit)
