@@ -1,11 +1,11 @@
 const express = require("express");
 const Fontaine = require("../models/Fontaine");
-const filterData = require("../seeds/feedMyDb");
+const multer = require("multer");
+const upload = multer();
 
 const router = express.Router();
 
 router.get("/", (req, res, next) => {
-  console.log(req.query.offset);
   const offset = req.query.offset ? Number(req.query.offset) : 0;
   const limit = offset ? 40 : req.query.offset ? 40 : 0;
   Fontaine.find()
@@ -17,7 +17,7 @@ router.get("/", (req, res, next) => {
     .catch(err => next(err));
 });
 
-router.post("/", (req, res, next) => {
+router.post("/", upload.none(), (req, res, next) => {
   let {
     gazeuse,
     address,
@@ -29,6 +29,7 @@ router.post("/", (req, res, next) => {
     type,
     name
   } = req.body;
+
   Fontaine.create({
     gazeuse,
     address,
@@ -50,7 +51,6 @@ router.post("/", (req, res, next) => {
 });
 
 router.delete("/:id", (req, res) => {
-  console.log(req.params.id);
   Fontaine.findByIdAndDelete(req.params.id)
     .then(dbRes => {
       console.log(dbRes);
