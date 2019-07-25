@@ -56,7 +56,7 @@ router.post("/signup", (req, res, next) => {
     })
     .catch(apiErr => {
       const error = {
-        11000: "The email already exists in database"
+        11000: "The user already exists in database"
       };
       // you may want to use more error code(s) for precise error handling ...
 
