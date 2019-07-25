@@ -47,12 +47,10 @@ router.post("/signup", (req, res, next) => {
         console.log(newUserFromDB);
         console.log("passport login error", err);
         if (err) {
-          console.log("lol");
           return res.status(500).json({
             message: "Something went wrong with automatic login after signup"
           });
         }
-        console.log("OKKKKKKKKK");
         res.status(200).json(req.user);
       });
     })
@@ -121,7 +119,6 @@ router.post("/login", (req, res, next) => {
 });
 
 router.post("/logout", (req, res, next) => {
-  console.log("coucou logout");
   req.logout(); // utils function provided by passport
   res.json({ message: "Success" });
 });
