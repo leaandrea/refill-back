@@ -8,30 +8,27 @@ router.post("/contact", (req, res, next) => {
   const { firstname, lastname, email, subject, message } = req.body;
 
   const transporter = nodemailer.createTransport({
-    // host: "smtp.gmail.com",
-    // secure: true,
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     service: "gmail",
     auth: {
       user: process.env.MAIL_ADDRESS,
       pass: process.env.MAIL_PASS
     }
   });
-  let mailOptions = {
-    from: email,
-    to: transporter.options.auth.user,
-    email: email,
-    subject: `${subject}`,
-    text: `${message}`,
-    html: `
+
+  transporter
+    .sendMail({
+      from: email,
+      to: transporter.options.auth.user,
+      subject: `${subject}`,
+      text: `${message}`,
+      html: `
       <p>you got a message from ${firstname} - ${lastname}</p>
       <hr>
       <p>${message}</p>
       `
-  };
-
-  transporter
-    .sendMail({
-      mailOptions
     })
     .then(info => {
       console.log(email);
