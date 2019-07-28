@@ -7,7 +7,7 @@ const UserModel = require("../models/User");
 
 router.post("/signup", (req, res, next) => {
   // console.log("file ?", req.file);
-  console.log("req body", req.body);
+  // console.log("req body", req.body);
   const { username, password } = req.body;
 
   var errorMsg = null;
